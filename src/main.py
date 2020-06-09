@@ -37,20 +37,20 @@ def move(board, loc):
     try:
         x = int(loc[0]) - 1
         y = int(loc[1]) - 1
+        if x not in range(3) or y not in range(3):
+            print("Coordinates should be from 1 to 3!")
+            move(board, input("Enter the coordinates: ").split())
+        elif board[2 - y][x] != "_":
+            print("This cell is occupied! Choose another one!")
+            move(board, input("Enter the coordinates: ").split())
+        else:
+            board[2 - y][x] = turn(board)
     except ValueError:
         print("You should enter numbers!")
         move(board, input("Enter the coordinates: ").split())
     except IndexError:
         print("Please enter valid coordinates.")
         move(board, input("Enter the coordinates: ").split())
-    if x not in range(3) or y not in range(3):
-        print("Coordinates should be from 1 to 3!")
-        move(board, input("Enter the coordinates: ").split())
-    elif board[2 - y][x] != "_":
-        print("This cell is occupied! Choose another one!")
-        move(board, input("Enter the coordinates: ").split())
-    else:
-        board[2 - y][x] = turn(board)
 
 
 def check_win(board, t):
