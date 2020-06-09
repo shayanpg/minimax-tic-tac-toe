@@ -1,5 +1,6 @@
 def setup_board():
-    cells = input("Enter cells: ").split()
+    cells = input("Enter cells: ").strip()
+    assert len(cells) == 9
     board = []
     i = 0
     for j in range(3):
@@ -9,11 +10,13 @@ def setup_board():
             i += 1
     return board
 
+
 def print_board(board):
     print("---------")
     for row in board:
         print('| ' + " ".join(row).replace("_", " ") + ' |')
     print("---------")
+
 
 def turn(board):
     num_x, num_o = 0, 0
@@ -27,6 +30,7 @@ def turn(board):
         return 'X'
     else:
         return 'O'
+
 
 def move(board):
     loc = input("Enter the coordinates: ").split()
@@ -43,46 +47,50 @@ def move(board):
     if x not in range(3) or y not in range(3):
         print("Coordinates should be from 1 to 3!")
         move(board)
-    elif board[2-y][x] != "_":
+    elif board[2 - y][x] != "_":
         print("This cell is occupied! Choose another one!")
         move(board)
     else:
-        board[2-y][x] = turn()
+        board[2 - y][x] = turn(board)
 
-def find_neighbors(board, x, y):
+
+def find_neighbors(x, y):
     neighbors = []
-    for i in range(x-1, x+2):
-        for j in range(y-1, y+2):
+    for i in range(x - 1, x + 2):
+        for j in range(y - 1, y + 2):
             if x in range(3) and y in range(3) and (i, j) != (x, y):
                 neighbors.append((i, j))
     return neighbors
 
-def visit(x, y, visited, counter):
+
+def visit(board, x, y, visited, counter):
     if board[x][y] != turn:
         return False
     if counter == 3:
         return True
-    for neighbor in find_neighbors(board, x, y):
+    for neighbor in find_neighbors(x, y):
         if not visited[neighbor[0]][neighbor[1]]:
-            v = visit(neighbor[0], neighbor[1], visited, counter+1)
+            v = visit(board, neighbor[0], neighbor[1], visited, counter + 1)
             if v:
                 return True
     return False
 
-def check_win(board, turn):
+
+def check_win(board):
     visited = []
     for i in range(3):
         visited.append([False, False, False])
     for x in range(3):
         for y in range(3):
-            if visit(x, y, visited, 1):
+            if visit(board, x, y, visited, 1):
                 return True
     return False
 
+
 def game_state(board):
-    if check_win(board, "X"):
+    if check_win(board):
         print("X wins")
-    elif check_win(board, "O"):
+    elif check_win(board):
         print("O wins")
     else:
         e_counter = len([i for row in board for i in row if i == "_"])
@@ -98,6 +106,7 @@ def main():
     move(board)
     print_board(board)
     game_state(board)
+
 
 if __name__ == "__main__":
     main()
