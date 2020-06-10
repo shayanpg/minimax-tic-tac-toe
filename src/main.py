@@ -1,3 +1,6 @@
+import random
+
+
 def setup_board(cells):
     cells = cells.strip()
     assert len(cells) == 9
@@ -33,7 +36,6 @@ def turn(board):
 
 
 def move(board, loc):
-    x, y = -1, -1
     try:
         x = int(loc[0]) - 1
         y = int(loc[1]) - 1
@@ -53,6 +55,11 @@ def move(board, loc):
         move(board, input("Enter the coordinates: ").split())
 
 
+def easy(board):
+    i, j = random.randrange(3), random.randrange(3)
+    return [i, j] if board[i][j] == "_" else easy(board)
+
+
 def check_win(board, t):
     for i in range(3):
         across = all([board[i][j] == t for j in range(3)])
@@ -69,20 +76,25 @@ def game_state(board):
         return "X wins"
     elif check_win(board, 'O'):
         return "O wins"
-    else:
-        e_counter = len([i for row in board for i in row if i == "_"])
-        if e_counter > 0:
-            return "Game not finished"
-        else:
-            return "Draw"
+    elif len([i for row in board for i in row if i == "_"]) == 0:
+        return "Draw"
 
 
 def main():
-    board = setup_board(input("Enter cells: "))
-    print_board(board)
-    move(board, input("Enter the coordinates: ").split())
-    print_board(board)
-    print(game_state(board))
+    board = setup_board("_________")
+    winner = None
+    while not winner:
+        print_board(board)
+        move(board, input("Enter the coordinates: ").split())
+        print_board(board)
+        winner = game_state(board)
+        if winner:
+            break
+        else:
+            move(board, easy(board))
+            print('Making move level "easy"')
+            print_board(board)
+    print(winner)
 
 
 if __name__ == "__main__":

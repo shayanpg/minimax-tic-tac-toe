@@ -3,7 +3,7 @@ import copy
 from src import main
 
 
-class MyTestCase(unittest.TestCase):
+class MainTests(unittest.TestCase):
     def test_setup(self):
         board = main.setup_board("XXO___XOX")
         t_board = [['X', 'X', 'O'],
@@ -28,13 +28,13 @@ class MyTestCase(unittest.TestCase):
         x_win = main.setup_board("XO_OXOO_X")
         x_win2 = main.setup_board("XXXXXXXXX")
         o_win = main.setup_board("O__OXXOX_")
-        not_finished = main.setup_board("XOXOXO___")
         draw = main.setup_board("XOOOXXOXO")
+        not_finished = main.setup_board("XOXOXO___")
         self.assertEqual(main.game_state(x_win), "X wins")
         self.assertEqual(main.game_state(x_win2), "X wins")
         self.assertEqual(main.game_state(o_win), "O wins")
-        self.assertEqual(main.game_state(not_finished), "Game not finished")
         self.assertEqual(main.game_state(draw), "Draw")
+        self.assertFalse(main.game_state(not_finished))
 
 
 if __name__ == '__main__':
