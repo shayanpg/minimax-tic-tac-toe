@@ -26,9 +26,12 @@ class Player:
         else:
             return self.randmove(board)
 
-    def make_move(self, board):
+    def make_move(self, board, mv=None):
         try:
-            x, y = self.move(board)
+            if mv:
+                x, y = mv
+            else:
+                x, y = self.move(board)
             if x not in range(1, 4) or y not in range(1, 4):
                 print("Coordinates should be from 1 to 3!")
                 self.make_move(board)

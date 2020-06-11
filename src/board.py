@@ -20,11 +20,11 @@ class Board:
         return self.board
 
     def get(self, x, y):
-        return self.board[1-y][x-1]
+        return self.board[3-y][x-1]
 
     def set(self, x, y, t):
         if self.get(x, y) == '_':
-            self.board[1-y][x-1] = t
+            self.board[3-y][x-1] = t
             return True
         else:
             return False

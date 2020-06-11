@@ -31,8 +31,8 @@ def check_win(board, t):
         down = all([board.get(j, i) == t for j in BOARD_RANGE])
         if across or down:
             return True
-    diag_n = all([board.get(i, i) == t for i in BOARD_RANGE])
-    diag_p = all([board.get(i, 4-i) == t for i in BOARD_RANGE])
+    diag_p = all([board.get(i, i) == t for i in BOARD_RANGE])
+    diag_n = all([board.get(i, 4-i) == t for i in BOARD_RANGE])
     return diag_n or diag_p
 
 
