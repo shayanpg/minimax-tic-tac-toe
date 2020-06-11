@@ -1,6 +1,22 @@
 import random
 
 
+def setup_commands(*args):
+    diff = ["user", "easy"]
+    if len(args) == 1 and args[0] == "exit":
+        exit(0)
+    elif (
+            len(args) == 3
+            and args[0] == "start"
+            and args[1] in diff
+            and args[2] in diff
+    ):
+        return args[1:]
+    else:
+        print("Bad parameters!")
+        return setup_commands(*input("Input command: ").split())
+
+
 def setup_board(cells):
     cells = cells.strip()
     assert len(cells) == 9
@@ -35,18 +51,17 @@ def turn(board):
         return 'O'
 
 
-def move(board, loc):
+def move(board, player):
     try:
-        x = int(loc[0]) - 1
-        y = int(loc[1]) - 1
+        x, y = player(board)
         if x not in range(3) or y not in range(3):
             print("Coordinates should be from 1 to 3!")
-            move(board, input("Enter the coordinates: ").split())
-        elif board[2 - y][x] != "_":
+            move(board, player)
+        elif board[2-y][x] != "_":
             print("This cell is occupied! Choose another one!")
-            move(board, input("Enter the coordinates: ").split())
+            move(board, player)
         else:
-            board[2 - y][x] = turn(board)
+            board[2-y][x] = turn(board)
     except ValueError:
         print("You should enter numbers!")
         move(board, input("Enter the coordinates: ").split())
@@ -55,9 +70,23 @@ def move(board, loc):
         move(board, input("Enter the coordinates: ").split())
 
 
+def user(board):
+    x, y = input("Enter the coordinates: ").split()
+    return int(x) - 1, int(y) - 1
+
+
 def easy(board):
     i, j = random.randrange(3), random.randrange(3)
-    return [i, j] if board[i][j] == "_" else easy(board)
+    if board[2-j][i] == "_":
+        print('Making move level "easy"')
+        return [i, j]
+    else:
+        return easy(board)
+
+
+def dfclt(x):
+    d = {"user": user, "easy": easy}
+    return d.get(x)
 
 
 def check_win(board, t):
@@ -81,20 +110,22 @@ def game_state(board):
 
 
 def main():
-    board = setup_board("_________")
-    winner = None
-    while not winner:
+    while True:
+        x, o = setup_commands(*input("Input command: ").split())
+        x, o = dfclt(x), dfclt(o)
+        board = setup_board("_________")
         print_board(board)
-        move(board, input("Enter the coordinates: ").split())
-        print_board(board)
-        winner = game_state(board)
-        if winner:
-            break
-        else:
-            move(board, easy(board))
-            print('Making move level "easy"')
+        winner = None
+        while not winner:
+            move(board, x)
             print_board(board)
-    print(winner)
+            winner = game_state(board)
+            if winner:
+                break
+            else:
+                move(board, o)
+                print_board(board)
+        print(winner)
 
 
 if __name__ == "__main__":
