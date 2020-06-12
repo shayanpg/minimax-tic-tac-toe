@@ -44,7 +44,7 @@ def two(board, t):
     if check(diag_n):
         for i in range(len(diag_n)):
             if diag_n[i] == '_':
-                return [i+1, 4-i+1]
+                return [i+1, 3-i]
 
 
 class Player:

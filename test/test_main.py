@@ -58,6 +58,10 @@ class MainTests(unittest.TestCase):
         m.make_move(b)
         self.assertEqual(game_state(b), "X wins")
 
+        b = Board("_XOOX__OX")
+        m.make_move(b)
+        self.assertEqual(game_state(b), "X wins")
+
 
 if __name__ == '__main__':
     unittest.main()
