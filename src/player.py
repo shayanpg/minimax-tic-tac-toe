@@ -1,4 +1,5 @@
 import random
+from src.main import game_state
 
 BOARD_RANGE = range(1, 4)
 
@@ -47,16 +48,34 @@ def two(board, t):
                 return [i+1, 3-i]
 
 
+def find_moves(board):
+    return [[i, j] for i in BOARD_RANGE
+            for j in BOARD_RANGE
+            if board.get(i, j) == '_']
+
+
+def minimax(board, depth=1):
+    if game_state(board) == "Draw":
+        return [[], 0 - depth]
+    elif game_state(board) == turn(board):
+        return [[], 1000 - depth]
+    elif game_state(board) == opp(board):
+        return [[], -1000 - depth]
+    scores = []
+    for move in find_moves(board):
+        b = board.copy_board()
+        Player().make_move(b, move)
+        scores.append([move, minimax(b, depth + 1)])
+    return max(scores, key=lambda x: x[1])
+
+
+def randmove(board):
+    return random.choice(find_moves(board))
+
+
 class Player:
     def move(self, board):
-        return self.randmove(board)
-
-    def randmove(self, board):
-        i, j = random.randrange(1, 4), random.randrange(1, 4)
-        if board.get(i, j) == "_":
-            return [i, j]
-        else:
-            return self.randmove(board)
+        return randmove(board)
 
     def make_move(self, board, mv=None):
         try:
@@ -106,4 +125,4 @@ class Medium(Player):
 class Hard(Player):
     def move(self, board):
         print('Making move level "hard"')
-        return super().move(board)
+        return minimax(board)[0]

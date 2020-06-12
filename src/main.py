@@ -41,9 +41,9 @@ def check_win(board, t):
 
 def game_state(board):
     if check_win(board, 'X'):
-        return "X wins"
+        return "X"
     elif check_win(board, 'O'):
-        return "O wins"
+        return "O"
     elif len([i for row in board.get_board() for i in row if i == "_"]) == 0:
         return "Draw"
 
@@ -65,7 +65,10 @@ def main():
                 o.make_move(b)
                 b.print_board()
                 winner = game_state(b)
-        print(winner)
+        if winner == "Draw":
+            print(winner)
+        else:
+            print(f"{winner} wins")
 
 
 if __name__ == "__main__":
