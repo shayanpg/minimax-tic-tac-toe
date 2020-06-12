@@ -1,5 +1,7 @@
 import random
 
+BOARD_RANGE = range(1, 4)
+
 
 def turn(board):
     num_x, num_o = 0, 0
@@ -13,6 +15,36 @@ def turn(board):
         return 'X'
     else:
         return 'O'
+
+
+def opp(board):
+    return 'X' if turn(board) == 'O' else 'O'
+
+
+def two(board, t):
+    def check(lst):
+        return sum([k == t for k in lst]) == 2 and '_' in lst
+    for i in BOARD_RANGE:
+        down = [board.get(i, j) for j in BOARD_RANGE]
+        if check(down):
+            for j in range(len(down)):
+                if down[j] == '_':
+                    return [i, j+1]
+        across = [board.get(j, i) for j in BOARD_RANGE]
+        if check(across):
+            for j in range(len(across)):
+                if across[j] == '_':
+                    return [j+1, i]
+    diag_p = [board.get(i, i) for i in BOARD_RANGE]
+    if check(diag_p):
+        for i in range(len(diag_p)):
+            if diag_p[i] == '_':
+                return [i+1, i+1]
+    diag_n = [board.get(i, 4 - i) for i in BOARD_RANGE]
+    if check(diag_n):
+        for i in range(len(diag_n)):
+            if diag_n[i] == '_':
+                return [i+1, 4-i+1]
 
 
 class Player:
@@ -49,7 +81,7 @@ class Player:
 class User(Player):
     def move(self, board):
         x, y = input("Enter the coordinates: ").split()
-        return [int(x) - 1, int(y) - 1]
+        return [int(x), int(y)]
 
 
 class Easy(Player):
@@ -60,8 +92,18 @@ class Easy(Player):
 
 class Medium(Player):
     def move(self, board):
-        pass
+        print('Making move level "medium"')
+        us = two(board, turn(board))
+        if us:
+            return us
+        them = two(board, opp(board))
+        if them:
+            return them
+        else:
+            return super().move(board)
 
 
 class Hard(Player):
-    pass
+    def move(self, board):
+        print('Making move level "hard"')
+        return super().move(board)

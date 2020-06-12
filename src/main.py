@@ -5,16 +5,19 @@ BOARD_RANGE = range(1, 4)
 
 
 def setup_commands(*args):
-    diff = ["user", "easy"]
-    if len(args) == 1 and args[0] == "exit":
+    diff = ["user", "easy", "medium", "hard"]
+    processed = []
+    for i in range(len(args)):
+        processed.append(args[i].lower())
+    if len(processed) == 1 and processed[0] == "exit":
         exit(0)
     elif (
-            len(args) == 3
-            and args[0] == "start"
-            and args[1].lower() in diff
-            and args[2].lower() in diff
+            len(processed) == 3
+            and processed[0] == "start"
+            and processed[1] in diff
+            and processed[2] in diff
     ):
-        return args[1:]
+        return processed[1:]
     else:
         print("Bad parameters!")
         return setup_commands(*input("Input command: ").split())

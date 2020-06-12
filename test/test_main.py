@@ -52,6 +52,12 @@ class MainTests(unittest.TestCase):
         b = Board("X__X____X")
         self.assertFalse(check_win(b, 'X'))
 
+    def test_medium(self):
+        b = Board("XX_OXOXOO")
+        m = Medium()
+        m.make_move(b)
+        self.assertEqual(game_state(b), "X wins")
+
 
 if __name__ == '__main__':
     unittest.main()
