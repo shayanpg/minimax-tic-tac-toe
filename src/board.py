@@ -10,6 +10,10 @@ class Board:
                 i += 1
             self.board[i].append(c)
 
+    def copy_board(self):
+        arr = [i for row in self.get_board() for i in row]
+        return Board("".join(arr))
+
     def print_board(self):
         print("---------")
         for row in self.board:
