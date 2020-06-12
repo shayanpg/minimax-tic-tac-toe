@@ -54,19 +54,26 @@ def find_moves(board):
             if board.get(i, j) == '_']
 
 
-def minimax(board, depth=1):
+def minimax(board, depth=1, sense=1):
     if game_state(board) == "Draw":
-        return [[], 0 - depth]
+        return [[], 0]
     elif game_state(board) == turn(board):
-        return [[], 1000 - depth]
+        return [[], (1000 - depth) * sense]
     elif game_state(board) == opp(board):
-        return [[], -1000 - depth]
+        return [[], (-1000 - depth) * sense]
+    elif depth == 3:
+        score = 0
+        if two(board, turn(board)):
+            score += 100 * sense
+        if two(board, opp(board)):
+            score -= 100 * sense
+        return [[], score]
     scores = []
     for move in find_moves(board):
         b = board.copy_board()
         Player().make_move(b, move)
-        scores.append([move, minimax(b, depth + 1)])
-    return max(scores, key=lambda x: x[1])
+        scores.append([move, minimax(b, depth + 1, -sense)])
+    return max(scores, key=lambda x: x[1] * sense)
 
 
 def randmove(board):
