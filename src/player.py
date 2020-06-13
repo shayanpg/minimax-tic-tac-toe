@@ -5,6 +5,11 @@ BOARD_RANGE = range(1, 4)
 
 
 def turn(board):
+    """
+    Find whose turn it is.
+    :param board: current board state
+    :return: next piece to be played
+    """
     num_x, num_o = 0, 0
     for row in board.get_board():
         for i in row:
@@ -19,11 +24,28 @@ def turn(board):
 
 
 def opp(board):
+    """
+    Find whose turn it isn't.
+    :param board: current board state
+    :return: opposite piece of turn(board)
+    """
     return 'X' if turn(board) == 'O' else 'O'
 
 
 def two(board, t):
+    """
+    Check if T has the opportunity to win if they're next
+    (available two in a row).
+    :param board: current board state
+    :param t: piece to check for available wins
+    :return: position T can take for a win
+    """
     def check(lst):
+        """
+        Verify a row represents a win opportunity.
+        :param lst: board row
+        :return: whether lst represents a win opportunity
+        """
         return sum([k == t for k in lst]) == 2 and '_' in lst
     for i in BOARD_RANGE:
         down = [board.get(i, j) for j in BOARD_RANGE]
@@ -49,13 +71,28 @@ def two(board, t):
 
 
 def find_moves(board):
+    """
+    Find all open positions on the board.
+    :param board: current board state
+    :return: collection of available moves
+    """
     return [[i, j] for i in BOARD_RANGE
             for j in BOARD_RANGE
             if board.get(i, j) == '_']
 
 
 def minimax(board, depth=4, sense=1, alpha=float("-inf"), beta=float("inf")):
-    if game_state(board) == "Draw":
+    """
+    Minimax algorithm looking multiple moves ahead to determine optimal moves.
+    Uses alpha-beta pruning.
+    :param board: current board state
+    :param depth: number of turns ahead to look
+    :param sense: determines whether player is minimizing or maximizing score
+    :param alpha: lower bound for maximum score
+    :param beta: upper bound for minimum score
+    :return: optimal move
+    """
+    if game_state(board) == "draw":
         return [[], 0]
     elif game_state(board) == turn(board):
         return [[], (1000 + depth) * sense]
@@ -86,48 +123,86 @@ def minimax(board, depth=4, sense=1, alpha=float("-inf"), beta=float("inf")):
 
 
 def randmove(board):
+    """
+    Creates a random valid move.
+    :param board: current board state
+    :return: random move
+    """
     return random.choice(find_moves(board))
 
 
 class Player:
+    """Generic player interface."""
+
     def move(self, board):
+        """
+        Move generation method.
+        :param board: current board state
+        :return: coordinates
+        """
         return randmove(board)
 
     def make_move(self, board, mv=None):
+        """
+        Process a move (given or generated).
+        :param board: current board state
+        :param mv: optional given move. used for testing
+        """
         try:
             if mv:
                 x, y = mv
             else:
                 x, y = self.move(board)
             if x not in range(1, 4) or y not in range(1, 4):
-                print("Coordinates should be from 1 to 3!")
+                print("coordinates should be from 1 to 3")
                 self.make_move(board)
             elif not board.set(x, y, turn(board)):
-                print("This cell is occupied! Choose another one!")
+                print("cell occupied")
                 self.make_move(board)
         except ValueError:
-            print("You should enter numbers!")
+            print("invalid symbols")
             self.make_move(board)
         except IndexError:
-            print("Please enter valid coordinates.")
+            print("invalid coordinates")
             self.make_move(board)
 
 
 class User(Player):
+    """Human player"""
+
     def move(self, board):
-        x, y = input("Enter the coordinates: ").split()
+        """
+        Override.
+        :param board: current board state
+        :return: coordinates
+        """
+        x, y = input("player move (coordinates): ").split()
         return [int(x), int(y)]
 
 
 class Easy(Player):
+    """Easy difficulty"""
+
     def move(self, board):
-        print('Making move level "easy"')
+        """
+        Override.
+        :param board: current board state
+        :return: coordinates
+        """
+        print('computer move (easy)')
         return super().move(board)
 
 
 class Medium(Player):
+    """Medium difficulty"""
+
     def move(self, board):
-        print('Making move level "medium"')
+        """
+        Override.
+        :param board: current board state
+        :return: coordinates
+        """
+        print('computer move (medium)')
         us = two(board, turn(board))
         if us:
             return us
@@ -139,6 +214,13 @@ class Medium(Player):
 
 
 class Hard(Player):
+    """Hard difficulty"""
+
     def move(self, board):
-        print('Making move level "hard"')
+        """
+        Override.
+        :param board: current board state
+        :return: coordinates
+        """
+        print('computer move (hard)')
         return minimax(board)[0]
