@@ -1,5 +1,5 @@
 import random
-from src.main import game_state
+from main import game_state
 
 BOARD_RANGE = range(1, 4)
 

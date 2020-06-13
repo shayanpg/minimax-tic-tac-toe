@@ -1,5 +1,5 @@
-from src.player import *
-from src.board import *
+from player import *
+from board import *
 
 BOARD_RANGE = range(1, 4)
 
